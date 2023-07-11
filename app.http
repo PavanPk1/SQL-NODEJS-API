@@ -1,0 +1,38 @@
+
+//API 1 
+//SCENARIO 1
+GET http://localhost:3000/todos/?status=TO%20DO
+###
+//SCENARIO 2
+GET http://localhost:3000/todos/?priority=HIGH
+###
+//SCENARIO 3
+GET http://localhost:3000/todos/?priority=HIGH&status=IN%20PROGRESS
+###
+//SCENARIO 4
+GET http://localhost:3000/todos/?search_q=Play
+###
+//API 2
+GET http://localhost:3000/todos/2/
+###
+//API 3
+POST http://localhost:3000/todos/
+Content-Type: application/json
+
+{
+  "id": 6,
+  "todo": "Learn MERN STACK",
+  "priority": "HIGH",
+  "status": "TO DO"
+}
+###
+//API 4
+PUT http://localhost:3000/todos/5/?priority=MEDIUM
+Content-Type: application/json
+
+{ 
+    "priority": "HIGH" 
+}
+###
+//API 5
+DELETE http://localhost:3000/todos/7/
