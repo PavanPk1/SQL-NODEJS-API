@@ -37,7 +37,6 @@ const hasStatusProperty = (requestQuery) => {
 };
 //API 1
 app.get("/todos/", async (request, response) => {
-  let data = null;
   let getTodosQuery = "";
   const { search_q = "", priority, status } = request.query;
   let query = `SELECT
@@ -45,28 +44,36 @@ app.get("/todos/", async (request, response) => {
         FROM
             todo `;
   switch (true) {
-    case hasPriorityAndStatusProperties(request.body): //if this is true then below query is taken in the code
-      getTodosQuery = query += ` WHERE
+    case hasPriorityAndStatusProperties(request.query): //if this is true then below query is taken in the code
+      getTodosQuery =
+        query +
+        ` WHERE
             todo LIKE '%${search_q}%'
             AND status = '${status}'
             AND priority = '${priority}';`;
       break;
-    case hasPriorityProperty(request.body):
-      getTodosQuery = query += ` WHERE
+    case hasPriorityProperty(request.query):
+      getTodosQuery =
+        query +
+        ` WHERE
             todo LIKE '%${search_q}%'
             AND priority = '${priority}';`;
       break;
-    case hasStatusProperty(request.body):
-      getTodosQuery = query += ` WHERE
+    case hasStatusProperty(request.query):
+      getTodosQuery =
+        query +
+        ` WHERE
     todo LIKE '%${search_q}%'
     AND status = '${status}';`;
       break;
     default:
-      getTodosQuery = query += ` WHERE
+      getTodosQuery =
+        query +
+        ` WHERE
     todo LIKE '%${search_q}%';`;
   }
 
-  data = await database.all(getTodosQuery);
+  const data = await database.all(getTodosQuery);
   response.send(data);
 });
 //API 2
@@ -91,30 +98,29 @@ app.put("/todos/:todoId/", async (request, response) => {
   const { status, priority, todo, search_q = "" } = request.body;
   const { todoId } = request.params;
   let query = `UPDATE todo SET `;
-  let result = null;
   switch (true) {
-    case hasPriorityAndStatusProperties(request.query): //if this is true then below query is taken in the code
-      getTodosQuery = query += `status = '${status}',
-            priority = '${priority}' WHERE id = ${todoId};`;
-      result = await database.run(getTodosQuery);
+    case hasPriorityAndStatusProperties(request.body):
+      query += `status = '${status}', priority = '${priority}' WHERE id = ${todoId};`;
+      await database.run(query); // Update the database with the query
       response.send("Status & Priority Updated");
       break;
-    case hasPriorityProperty(request.query):
-      getTodosQuery = query += `priority = '${priority}' WHERE id = ${todoId};`;
-      result = await database.run(getTodosQuery);
+    case hasPriorityProperty(request.body):
+      query += `priority = '${priority}' WHERE id = ${todoId};`;
+      await database.run(query); // Update the database with the query
       response.send("Priority Updated");
       break;
-    case hasStatusProperty(request.query):
-      getTodosQuery = query += `status = '${status}' WHERE id = ${todoId};`;
-      result = await database.run(getTodosQuery);
+    case hasStatusProperty(request.body):
+      query += `status = '${status}' WHERE id = ${todoId};`;
+      await database.run(query); // Update the database with the query
       response.send("Status Updated");
       break;
     default:
-      getTodosQuery = query += `todo = '%${search_q}%' WHERE id = ${todoId};`;
-      result = await database.run(getTodosQuery);
+      query += `todo = '%${search_q}%' WHERE id = ${todoId};`;
+      await database.run(query); // Update the database with the query
       response.send("Todo Updated");
   }
 });
+
 //API 5
 app.delete("/todos/:todoId/", async (request, response) => {
   const { todoId } = request.params;
