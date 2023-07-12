@@ -45,18 +45,18 @@ app.get("/todos/", async (request, response) => {
         FROM
             todo `;
   switch (true) {
-    case hasPriorityAndStatusProperties(request.query): //if this is true then below query is taken in the code
+    case hasPriorityAndStatusProperties(request.body): //if this is true then below query is taken in the code
       getTodosQuery = query += ` WHERE
             todo LIKE '%${search_q}%'
             AND status = '${status}'
             AND priority = '${priority}';`;
       break;
-    case hasPriorityProperty(request.query):
+    case hasPriorityProperty(request.body):
       getTodosQuery = query += ` WHERE
             todo LIKE '%${search_q}%'
             AND priority = '${priority}';`;
       break;
-    case hasStatusProperty(request.query):
+    case hasStatusProperty(request.body):
       getTodosQuery = query += ` WHERE
     todo LIKE '%${search_q}%'
     AND status = '${status}';`;
